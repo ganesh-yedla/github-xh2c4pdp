@@ -1,18 +1,14 @@
 import { useEffect, useState } from 'react';
-import { getTasks, type TTask } from './task-data';
-import { Task } from './task';
+import { flushSync } from 'react-dom';
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
-import { isTaskData } from './task-data';
 import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { reorderWithEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/reorder-with-edge';
 import { triggerPostMoveFlash } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash';
-import { flushSync } from 'react-dom';
+import { Task } from './task';
+import { getTaskData, isTaskData, type TTask, getTasks } from './task-data';
 
 export function List() {
-  // Initialize tasks with ranks
-  const [tasks, setTasks] = useState<TTask[]>(() =>
-    getTasks(),
-  );
+  const [tasks, setTasks] = useState<TTask[]>(() => getTasks());
 
   useEffect(() => {
     return monitorForElements({
@@ -36,7 +32,6 @@ export function List() {
         const closestEdgeOfTarget = extractClosestEdge(targetData);
 
         flushSync(() => {
-          // Reorder tasks
           const reorderedTasks = reorderWithEdge({
             list: tasks,
             startIndex: indexOfSource,
@@ -51,10 +46,10 @@ export function List() {
             rank: index,
           }));
 
+
           setTasks(updatedTasks);
         });
 
-        // Flash effect for the dropped task
         const element = document.querySelector(`[data-task-id="${sourceData.taskId}"]`);
         if (element instanceof HTMLElement) {
           triggerPostMoveFlash(element);
@@ -63,22 +58,34 @@ export function List() {
     });
   }, [tasks]);
 
-  const handleSave = () => {
-    console.log('Saving task order:', tasks);
-  };
-
   return (
-    <>
-    
-    <div className="flex flex-col gap-3 pt-6 my-0 mx-auto w-[420px]">
-      <button className='ml-auto bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition' onClick={handleSave}>Save</button>
-      <div className="flex flex-col gap-2 border border-solid rounded p-2">
-        {tasks.map((task) => (
-          <Task key={task.id} task={task} />
-        ))}
+    <div className="flex flex-col items-center pt-6 mx-auto w-[600px]">
+      <div className="w-full flex justify-end mb-4">
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+        // onClick={handleSave}
+        >
+          Save
+        </button>
       </div>
+      <table className="border-collapse border border-gray-300 w-[600px]">
+        <thead>
+          <tr className="bg-gray-200">
+            <th className="border border-gray-300 p-2">Rank</th>
+            <th className="border border-gray-300 p-2">Property</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tasks.map((task) => (
+            <tr key={task.id} data-task-id={task.id}>
+              <td className="border border-gray-300 p-2 text-center">#{task.rank + 1}</td>
+              <td className="border border-gray-300 p-2">
+                <Task task={task} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
-    </>
-
   );
 }

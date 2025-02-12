@@ -125,7 +125,7 @@ export function Task({ task }: { task: TTask }) {
           // Adding data-attribute as a way to query for this for our post drop flash
           data-task-id={task.id}
           ref={ref}
-          className={`flex text-sm bg-white flex-row items-center border border-solid rounded p-2 pl-0 hover:bg-slate-100 hover:cursor-grab ${
+          className={`flex text-sm bg-white flex-row items-center  p-2 pl-0 hover:bg-slate-100 hover:cursor-grab ${
             stateStyles[state.type] ?? ''
           }`}
         >
@@ -133,8 +133,6 @@ export function Task({ task }: { task: TTask }) {
             <GripVertical size={10} />
           </div>
           <span className="truncate flex-grow flex-shrink">{task.content}</span>
-          {/* Rank Display */}
-          <span className="w-6 text-gray-600 font-bold">#{task.rank + 1}</span>
           {/* <Status status={task.status} /> */}
         </div>
         {state.type === 'is-dragging-over' && state.closestEdge ? (
