@@ -11,7 +11,7 @@ import { flushSync } from 'react-dom';
 export function List() {
   // Initialize tasks with ranks
   const [tasks, setTasks] = useState<TTask[]>(() =>
-    getTasks().map((task, index) => ({ ...task, rank: index })),
+    getTasks(),
   );
 
   useEffect(() => {
@@ -63,13 +63,22 @@ export function List() {
     });
   }, [tasks]);
 
+  const handleSave = () => {
+    console.log('Saving task order:', tasks);
+  };
+
   return (
-    <div className="pt-6 my-0 mx-auto w-[420px]">
+    <>
+    
+    <div className="flex flex-col gap-3 pt-6 my-0 mx-auto w-[420px]">
+      <button className='ml-auto bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition' onClick={handleSave}>Save</button>
       <div className="flex flex-col gap-2 border border-solid rounded p-2">
         {tasks.map((task) => (
           <Task key={task.id} task={task} />
         ))}
       </div>
     </div>
+    </>
+
   );
 }

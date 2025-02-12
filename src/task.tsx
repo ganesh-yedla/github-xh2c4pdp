@@ -16,7 +16,6 @@ import {
 } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import { DropIndicator } from './drop-indicator';
 import { getTaskData, isTaskData, type TTask } from './task-data';
-import { Status } from './status';
 
 type TaskState =
   | {
